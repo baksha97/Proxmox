@@ -4,7 +4,7 @@
 # Author: tteck (tteckster)
 # Co-author: Rogue-King
 # License: MIT
-# https://github.com/tteck/Proxmox/raw/main/LICENSE
+# https://github.com/baksha97/Proxmox/raw/main/LICENSE
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 color
