@@ -20,11 +20,13 @@ EOF
 RD=$(echo "\033[01;31m")
 YW=$(echo "\033[33m")
 GN=$(echo "\033[1;92m")
+GN=$(echo "\033[1;92m")
 CL=$(echo "\033[m")
 BFR="\\r\\033[K"
 HOLD="-"
 CM="${GN}✓${CL}"
 CROSS="${RD}✗${CL}"
+var_os_codename=$(lsb_release -sc)
 
 set -euo pipefail
 shopt -s inherit_errexit nullglob
@@ -54,11 +56,11 @@ start_routines() {
   yes)
     msg_info "Correcting Proxmox VE Sources"
     cat <<EOF >/etc/apt/sources.list
-deb http://deb.debian.org/debian bookworm main contrib
-deb http://deb.debian.org/debian bookworm-updates main contrib
-deb http://security.debian.org/debian-security bookworm-security main contrib
+deb http://deb.debian.org/debian ${var_os_codename} main contrib
+deb http://deb.debian.org/debian ${var_os_codename}-updates main contrib
+deb http://security.debian.org/debian-security ${var_os_codename}-security main contrib
 EOF
-echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' >/etc/apt/apt.conf.d/no-bookworm-firmware.conf
+echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' >/etc/apt/apt.conf.d/no-${var_os_codename}-firmware.conf
     msg_ok "Corrected Proxmox VE Sources"
     ;;
   no)
@@ -73,7 +75,7 @@ echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' >/etc/apt/
   yes)
     msg_info "Disabling 'pve-enterprise' repository"
     cat <<EOF >/etc/apt/sources.list.d/pve-enterprise.list
-# deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
+# deb https://enterprise.proxmox.com/debian/pve ${var_os_codename} pve-enterprise
 EOF
     msg_ok "Disabled 'pve-enterprise' repository"
     ;;
@@ -89,7 +91,7 @@ EOF
   yes)
     msg_info "Enabling 'pve-no-subscription' repository"
     cat <<EOF >/etc/apt/sources.list.d/pve-install-repo.list
-deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+deb http://download.proxmox.com/debian/pve ${var_os_codename} pve-no-subscription
 EOF
     msg_ok "Enabled 'pve-no-subscription' repository"
     ;;
@@ -105,10 +107,10 @@ EOF
     yes)
       msg_info "Correcting 'ceph package repositories'"
       cat <<EOF >/etc/apt/sources.list.d/ceph.list
-# deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
-# deb http://download.proxmox.com/debian/ceph-quincy bookworm no-subscription
-# deb https://enterprise.proxmox.com/debian/ceph-reef bookworm enterprise
-# deb http://download.proxmox.com/debian/ceph-reef bookworm no-subscription
+# deb https://enterprise.proxmox.com/debian/ceph-quincy ${var_os_codename} enterprise
+# deb http://download.proxmox.com/debian/ceph-quincy ${var_os_codename} no-subscription
+# deb https://enterprise.proxmox.com/debian/ceph-reef ${var_os_codename} enterprise
+# deb http://download.proxmox.com/debian/ceph-reef ${var_os_codename} no-subscription
 EOF
       msg_ok "Corrected 'ceph package repositories'"
       ;;
@@ -124,7 +126,7 @@ EOF
   yes)
     msg_info "Adding 'pvetest' repository and set disabled"
     cat <<EOF >/etc/apt/sources.list.d/pvetest-for-beta.list
-# deb http://download.proxmox.com/debian/pve bookworm pvetest
+# deb http://download.proxmox.com/debian/pve ${var_os_codename} pvetest
 EOF
     msg_ok "Added 'pvetest' repository"
     ;;
